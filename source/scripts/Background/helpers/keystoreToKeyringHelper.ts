@@ -46,7 +46,6 @@ export class KeystoreToKeyringHelper {
               pKey,
               true
             );
-            console.log(pKey);
           } catch (e) {
             console.log(
               'ERROR - Unable to migrate seed account - ',
@@ -75,7 +74,6 @@ export class KeystoreToKeyringHelper {
               pKey,
               true
             );
-            console.log(pKey);
           } catch (e) {
             console.log(
               'ERROR - Unable to migrate import account - ',

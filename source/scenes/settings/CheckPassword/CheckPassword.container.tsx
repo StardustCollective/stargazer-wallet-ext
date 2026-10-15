@@ -25,12 +25,14 @@ import {
   REMOVE_WALLET_MESSAGE_2,
 } from './constants';
 
+const CLEAR_CLIPBOARD_TIMEOUT = 60 * 1000; // 1 minute
+
 const CheckPasswordContainer: FC<TCheckPassword> = ({ navigation, route }) => {
   const { id, type } = route?.params || {};
 
   const linkTo = useLinkTo();
   const walletController = getWalletController();
-  const [isCopied, copyText] = useCopyClipboard();
+  const [isCopied, copyText] = useCopyClipboard(1000, CLEAR_CLIPBOARD_TIMEOUT);
 
   const { enabled: isBiometricEnabled } = useSelector(
     (state: RootState) => state.biometrics

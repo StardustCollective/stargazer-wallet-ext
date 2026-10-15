@@ -82,6 +82,8 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 116
         versionName "3.4.3"
+        // react-native-capture-protection: plain FLAG_SECURE, without the READ_MEDIA_IMAGES flavor
+        missingDimensionStrategy "react-native-capture-protection", "base"
     }
 
     signingConfigs {
@@ -91,15 +93,26 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        // Upload key comes from ~/.gradle/gradle.properties or -P flags, never from the repo
+        if (project.hasProperty('STARGAZER_UPLOAD_STORE_FILE')) {
+            release {
+                storeFile file(STARGAZER_UPLOAD_STORE_FILE)
+                storePassword STARGAZER_UPLOAD_STORE_PASSWORD
+                keyAlias STARGAZER_UPLOAD_KEY_ALIAS
+                keyPassword STARGAZER_UPLOAD_KEY_PASSWORD
+            }
+        }
     }
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
+            // Release builds are never signed with the committed debug keystore. Without the
+            // STARGAZER_UPLOAD_* properties the output is unsigned (or signed by injected
+            // android.injected.signing.* properties from Android Studio / CI).
             // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.findByName('release')
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }

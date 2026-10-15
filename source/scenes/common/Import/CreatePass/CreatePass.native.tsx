@@ -7,6 +7,7 @@ import { View } from 'react-native';
 import { scale } from 'react-native-size-matters';
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
 import Biometrics from 'utils/biometrics';
+import store from 'state/store';
 
 ///////////////////////////
 // Components
@@ -122,7 +123,10 @@ const CreatePass: FC<ICreatePass> = ({
               passed
                 ? nextHandler
                 : handleSubmit(async (data) => {
-                    await Biometrics.setUserPasswordInKeychain(data.password);
+                    await Biometrics.syncUserPasswordInKeychain(
+                      data.password,
+                      store.getState().biometrics.enabled
+                    );
                     onSubmit(data);
                   })
             }

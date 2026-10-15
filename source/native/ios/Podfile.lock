@@ -942,6 +942,27 @@ PODS:
     - React-Core
   - react-native-biometrics (3.0.1):
     - React-Core
+  - react-native-capture-protection (2.4.1):
+    - DoubleConversion
+    - glog
+    - hermes-engine
+    - RCT-Folly (= 2024.01.01.00)
+    - RCTRequired
+    - RCTTypeSafety
+    - React-Codegen
+    - React-Core
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-rendererdebug
+    - React-utils
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - Yoga
   - react-native-document-picker (7.1.3):
     - React-Core
   - react-native-netinfo (11.4.1):
@@ -1467,6 +1488,7 @@ DEPENDENCIES:
   - React-Mapbuffer (from `../node_modules/react-native/ReactCommon`)
   - react-native-background-timer (from `../node_modules/react-native-background-timer`)
   - react-native-biometrics (from `../node_modules/react-native-biometrics`)
+  - react-native-capture-protection (from `../node_modules/react-native-capture-protection`)
   - react-native-document-picker (from `../node_modules/react-native-document-picker`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
   - react-native-pager-view (from `../node_modules/react-native-pager-view`)
@@ -1590,6 +1612,8 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native-background-timer"
   react-native-biometrics:
     :path: "../node_modules/react-native-biometrics"
+  react-native-capture-protection:
+    :path: "../node_modules/react-native-capture-protection"
   react-native-document-picker:
     :path: "../node_modules/react-native-document-picker"
   react-native-netinfo:
@@ -1722,6 +1746,7 @@ SPEC CHECKSUMS:
   React-Mapbuffer: f245095650540b8ddd09ac907a79605f68b1f4d4
   react-native-background-timer: 4638ae3bee00320753647900b21260b10587b6f7
   react-native-biometrics: 43ed5b828646a7862dbc7945556446be00798e7d
+  react-native-capture-protection: 9ca7e80ac6c03f3c2aae5515443f50e55c941ecc
   react-native-document-picker: f4ccd6f6f369da1409e609788181eac66cc1a2d8
   react-native-netinfo: cec9c4e86083cb5b6aba0e0711f563e2fbbff187
   react-native-pager-view: 8825d687514422e9a8c95cd15f08a9a5a02e07c9

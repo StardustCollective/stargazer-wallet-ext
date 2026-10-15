@@ -12,6 +12,7 @@ import { View, ScrollView } from 'react-native';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import TextV3 from 'components/TextV3';
 import Layout from 'scenes/common/Layout';
+import useSecureScreen from 'hooks/useSecureScreen';
 
 ///////////////////////////
 // Styles
@@ -25,6 +26,8 @@ import styles from './styles';
 ///////////////////////////
 
 const CreatePhrase = ({ title, description, nextHandler, phrases, passed }) => {
+  useSecureScreen();
+
   const phrasesArray = phrases?.split(' ');
   const firstColumn = phrasesArray?.slice(0, 6);
   const secondColumn = phrasesArray?.slice(6, 12);

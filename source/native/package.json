@@ -26,6 +26,7 @@
     "react-native": "0.74.7",
     "react-native-background-timer": "^2.4.1",
     "react-native-biometrics": "^3.0.1",
+    "react-native-capture-protection": "2.4.1",
     "react-native-device-info": "^13.0.0",
     "react-native-document-picker": "^7.1.3",
     "react-native-dotenv": "^3.3.1",

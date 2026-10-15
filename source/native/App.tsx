@@ -6,6 +6,7 @@ import {SafeAreaProvider} from 'react-native-safe-area-context';
 import SplashScreen from 'react-native-splash-screen';
 import {NativeBaseProvider} from 'native-base';
 import RootStack from 'navigation/stacks/Root';
+import AutoLock from 'components/AutoLock';
 import linking from 'navigation/linking';
 import Store from 'state/store';
 import {Provider} from 'react-redux';
@@ -37,6 +38,7 @@ const App = () => {
                   backgroundColor={color.brand_900}
                 />
                 <RootStack />
+                <AutoLock />
             </NavigationContainer>
           </Provider>
         </NativeBaseProvider>

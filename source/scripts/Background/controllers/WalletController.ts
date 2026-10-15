@@ -15,7 +15,7 @@ import { type ICustomNetworkObject, type IVaultWalletsStoreState, Network } from
 
 import { isNative } from 'utils/envUtil';
 import { BITFI_WALLET_LABEL, BITFI_WALLET_PREFIX, CYPHEROCK_WALLET_LABEL, CYPHEROCK_WALLET_PREFIX, HardwareWallet, isBitfi, isCypherock, isHardware, isLedger, LEDGER_WALLET_LABEL, LEDGER_WALLET_PREFIX } from 'utils/hardware';
-import { getEncryptor } from 'utils/keyringManagerUtils';
+import { getEncryptor, isLegacyVault } from 'utils/keyringManagerUtils';
 
 import { updateAndNotify } from '../handlers/handleStoreSubscribe';
 import { KeystoreToKeyringHelper } from '../helpers/keystoreToKeyringHelper';
@@ -43,10 +43,14 @@ class WalletController {
 
   static instance: WalletController;
 
+  // Native encryptor; undefined on web, where dag4-keyring uses its default
+  private encryptor: any;
+
   constructor() {
     this.onboardHelper = new OnboardWalletHelper();
+    this.encryptor = getEncryptor();
     this.keyringManager = new KeyringManager({
-      encryptor: getEncryptor(),
+      encryptor: this.encryptor,
     });
     this.keyringManager.on('update', async (state: KeyringVaultState) => {
       store.dispatch(setVaultInfo(state));
@@ -92,6 +96,7 @@ class WalletController {
 
   async unLock(password: string): Promise<boolean> {
     await this.keyringManager.login(password);
+    await this.upgradeVaultEncryption(password);
 
     const state = store.getState();
     const { vault } = state;
@@ -108,6 +113,26 @@ class WalletController {
     }
 
     return true;
+  }
+
+  // Re-encrypts vaults written by an older encryptor with the current one.
+  // Must run right after a successful login, while the password is known to be valid.
+  private async upgradeVaultEncryption(password: string): Promise<void> {
+    try {
+      const encryptedVault = await dag4.di.getStateStorageDb().get('vault');
+      if (encryptedVault && isLegacyVault(encryptedVault)) {
+        // persistAllWallets is private in dag4-keyring but is the only way to re-encrypt in place.
+        await (this.keyringManager as any).persistAllWallets(password);
+      }
+    } catch (e) {
+      console.log('Unable to upgrade vault encryption');
+    }
+  }
+
+  // Password of the current session, used only to seed the biometric keychain entry.
+  getSessionPassword(): string | null {
+    if (!this.isUnlocked()) return null;
+    return (this.keyringManager as any).password ?? null;
   }
 
   async importSingleAccount(label: string, network: KeyringNetwork, privateKey: string, silent?: boolean): Promise<string> {
@@ -418,6 +443,8 @@ class WalletController {
   logOut(): void {
     this.account.assetsBalanceMonitor.stop();
     this.keyringManager.logout();
+    this.encryptor?.clearKeyCache?.();
+    this.onboardHelper.reset();
     this.account.networkController = undefined;
     store.dispatch(setUnlocked(false));
     store.dispatch(setAutoLogin(false));

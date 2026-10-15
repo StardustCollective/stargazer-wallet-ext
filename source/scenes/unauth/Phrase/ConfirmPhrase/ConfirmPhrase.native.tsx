@@ -13,6 +13,7 @@ import Layout from 'scenes/common/Layout';
 import ButtonV3, { BUTTON_TYPES_ENUM, BUTTON_SIZES_ENUM } from 'components/ButtonV3';
 import CheckIcon from 'components/CheckIcon';
 import TextV3 from 'components/TextV3';
+import useSecureScreen from 'hooks/useSecureScreen';
 
 ///////////////////////////
 // Types
@@ -42,6 +43,8 @@ const ConfirmPhrase: FC<IConfirmPhrase> = ({
   handleNewPhrase,
   handleConfirm,
 }) => {
+  useSecureScreen();
+
   return (
     <ScrollView contentContainerStyle={styles.contentContainer}>
       <Layout title={title}>

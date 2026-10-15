@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from 'react';
+import React, { FC, useEffect, useRef } from 'react';
 import RNFS from 'react-native-fs';
 import Button from 'components/ButtonV3';
 
@@ -21,9 +21,20 @@ interface IFileSelect {
 const FileSelect: FC<IFileSelect> = ({ id, onChange, disabled = false }) => {
   const [result, setResult] = React.useState<DocumentPickerResponse | undefined | null>();
   const [readFile, setReadFile] = React.useState<any>();
+  // Path of the picked file's copy in the cache directory
+  const copiedFile = useRef<string | null>(null);
+
+  // The copy may be a private key keystore, so never leave it behind
+  const removeCopiedFile = () => {
+    if (copiedFile.current) {
+      RNFS.unlink(copiedFile.current).catch(() => {});
+      copiedFile.current = null;
+    }
+  };
+
+  useEffect(() => removeCopiedFile, []);
 
   useEffect(() => {
-    console.log(JSON.stringify(result, null, 2));
     onChange(null);
   }, [result]);
 
@@ -59,13 +70,14 @@ const FileSelect: FC<IFileSelect> = ({ id, onChange, disabled = false }) => {
         ]
         */
 
+        removeCopiedFile();
         setResult(res);
         RNFS.stat(res.fileCopyUri).then((file) => {
           setReadFile(file);
+          copiedFile.current = file.path;
 
           //return file from read
           if (file.isFile()) {
-            console.log('calling onChange on FileSelect--->>>', file.path);
             onChange(file.path);
           } else {
             throw new Error('No file processed');

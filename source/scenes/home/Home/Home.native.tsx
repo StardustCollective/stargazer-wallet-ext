@@ -8,11 +8,8 @@ import {
   ActivityIndicator,
   ScrollView,
   TouchableOpacity,
-  AppState,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
-import { useLinkTo } from '@react-navigation/native';
-import BackgroundTimer from 'react-native-background-timer';
 import { iosPlatform } from 'utils/platform';
 
 ///////////////////////////
@@ -59,7 +56,6 @@ import LinearGradient from 'react-native-linear-gradient';
 
 const ACTIVITY_INDICATOR_SIZE = 'large';
 const ACTIVITY_INDICATOR_COLOR = '#FFF';
-const LOGOUT_TIMEOUT = 1000 * 60 * 5; // 5 minutes
 const ICON_SIZE = 14;
 let lastIsConnected = true;
 
@@ -81,7 +77,6 @@ const Home: FC<IHome> = ({
   const [isWalletSelectorOpen, setIsWalletSelectorOpen] = useState(false);
 
   const walletController = getWalletController();
-  const linkTo = useLinkTo();
 
   const handleSwitchWallet = async (
     walletId: string,
@@ -129,32 +124,6 @@ const Home: FC<IHome> = ({
       unsubscribeNetInfo();
     };
   }, []);
-
-  useEffect(() => {
-    // Start timer when app is in background (or inactive for iOS)
-    if (['background', 'inactive'].includes(AppState.currentState)) {
-      BackgroundTimer.runBackgroundTimer(async () => {
-        // Check if the app is still in background
-        if (AppState.currentState === 'background') {
-          // Check if the user is logged in
-          const isLoggedIn = await walletController.isUnlocked();
-          if (isLoggedIn) {
-            // Logout the user and navigate to the log in screen
-            await walletController.logOut();
-            linkTo('/authRoot');
-          }
-        }
-
-        // Reset the timer
-        BackgroundTimer.stopBackgroundTimer();
-      }, LOGOUT_TIMEOUT); // 5 minutes
-    }
-
-    // Timer should be resetted when app is in foreground
-    if (AppState.currentState === 'active') {
-      BackgroundTimer.stopBackgroundTimer();
-    }
-  }, [AppState.currentState]);
 
   return (
     <View style={styles.container}>

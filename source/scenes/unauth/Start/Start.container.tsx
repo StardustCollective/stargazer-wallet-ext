@@ -2,14 +2,15 @@
 // Imports
 ///////////////////////////
 
-import React from 'react';
-import { useLinkTo } from '@react-navigation/native';
+import React, { useCallback } from 'react';
+import { useFocusEffect, useLinkTo } from '@react-navigation/native';
 
 ///////////////////////////
 // Components
 ///////////////////////////
 
 import Container, { CONTAINER_COLOR } from 'components/Container';
+import { getWalletController } from 'utils/controllersUtils';
 
 ///////////////////////////
 // Scene
@@ -27,6 +28,13 @@ const StartContainer = ({ navigation }: { navigation: any }) => {
   ///////////////////////////
 
   const linkTo = useLinkTo();
+
+  // Drop any seed phrase left over from an abandoned onboarding
+  useFocusEffect(
+    useCallback(() => {
+      getWalletController().onboardHelper.reset();
+    }, [])
+  );
 
   ///////////////////////////
   // Callbacks
