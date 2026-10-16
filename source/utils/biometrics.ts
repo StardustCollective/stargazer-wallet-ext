@@ -27,7 +27,8 @@ const PASSWORD_KEYCHAIN_OPTIONS = {
 const BIOMETRY_MAP = {
   FaceID: 'Face ID',
   TouchID: 'Touch ID',
-  Biometrics: 'Touch ID/Face ID',
+  // Android reports a generic type that can be fingerprint, face or iris
+  Biometrics: 'Biometrics',
 };
 
 const getPublicKeyFromKeychain = async () => {

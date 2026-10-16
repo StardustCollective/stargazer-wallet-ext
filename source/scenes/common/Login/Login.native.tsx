@@ -162,7 +162,7 @@ const Login: FC<ILogin> = ({
 
     if (biometryType === 'Face ID') {
       rightIconComponent = <FaceIdIcon width={24} />;
-    } else if (biometryType === 'Touch ID' || biometryType === 'Touch ID/Face ID') {
+    } else if (biometryType === 'Touch ID' || biometryType === 'Biometrics') {
       rightIconComponent = <TouchIdIcon width={24} />;
     }
 
